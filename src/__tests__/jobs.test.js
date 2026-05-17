@@ -1,13 +1,12 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken'); // Import JWT to sign test keys
 const app = require('../index');
 const JobRequest = require('../models/JobRequest');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/globaltna_test';
 
-// Generate a valid token for testing creation routes
-const testToken = jwt.sign({ role: 'admin' }, process.env.JWT_SECRET || 'globaltna_secret_token_key_2026');
+// Use the admin password directly as the authorized token
+const testToken = process.env.ADMIN_PASSWORD || 'GlobalTnaAdmin2026';
 beforeAll(async () => {
   await mongoose.connect(MONGODB_URI);
 });

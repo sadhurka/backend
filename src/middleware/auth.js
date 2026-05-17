@@ -1,5 +1,3 @@
-const jwt = require('jsonwebtoken');
-
 module.exports = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -8,9 +6,13 @@ module.exports = (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'globaltna_secret_token_key_2026');
-    
-    req.user = decoded;
+    const adminPassword = process.env.ADMIN_PASSWORD || 'GlobalTnaAdmin2026';
+
+    if (token !== adminPassword) {
+      return res.status(403).json({ success: false, message: 'Invalid or expired authorization token.' });
+    }
+
+    req.user = { role: 'admin' };
     next();
   } catch (err) {
     return res.status(403).json({ success: false, message: 'Invalid or expired authorization token.' });

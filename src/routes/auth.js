@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 
 router.post('/login', (req, res) => {
   const { password } = req.body;
@@ -10,14 +9,8 @@ router.post('/login', (req, res) => {
     return res.status(401).json({ success: false, message: 'Invalid administration password' });
   }
 
-  // Generate an authorized administration token
-  const token = jwt.sign(
-    { role: 'admin' }, 
-    process.env.JWT_SECRET || 'globaltna_secret_token_key_2026', 
-    { expiresIn: '24h' }
-  );
-
-  res.json({ success: true, token });
+  // Use the admin password itself as the authorization token, completely removing JWT overhead
+  res.json({ success: true, token: adminPassword });
 });
 
 module.exports = router;
