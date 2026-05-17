@@ -36,18 +36,18 @@ app.use((err, _req, res, _next) => {
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/globaltna';
 
+console.log('Connecting to:', MONGODB_URI);
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('✅  MongoDB connected');
+  })
+  .catch((err) => {
+    console.error('❌  MongoDB connection error:', err.message);
+  });
+
 if (require.main === module) {
-  console.log('Connecting to:', MONGODB_URI);
-  mongoose
-    .connect(MONGODB_URI)
-    .then(() => {
-      console.log('✅  MongoDB connected');
-      app.listen(PORT, () => console.log(`🚀  API running on http://localhost:${PORT}`));
-    })
-    .catch((err) => {
-      console.error('❌  MongoDB connection error:', err.message);
-      process.exit(1);
-    });
+  app.listen(PORT, () => console.log(`🚀  API running on http://localhost:${PORT}`));
 }
 
 module.exports = app;
