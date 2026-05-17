@@ -16,13 +16,6 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.get('/', (_req, res) => {
-  res.json({
-    success: true,
-    message: 'GlobalTNA Service Request Board API is running',
-    environment: process.env.NODE_ENV || 'production'
-  });
-});
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRouter); // Exposes POST /api/auth/login
 app.use('/api/jobs', jobsRouter);  // Exposes REST endpoints for job requests
