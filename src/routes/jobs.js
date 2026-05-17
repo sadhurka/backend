@@ -116,6 +116,40 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
+// PUT /api/jobs/:id — update all job details
+// PROTECTED: Only authenticated administrators can update jobs
+router.put('/:id', protect, async (req, res, next) => {
+  try {
+    console.log(`[Backend] PUT /api/jobs/${req.params.id} called`); // Added to trigger nodemon restart
+    const { title, description, category, location, contactName, contactEmail, status } = req.body;
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (category !== undefined) updateData.category = category;
+    if (location !== undefined) updateData.location = location;
+    if (contactName !== undefined) updateData.contactName = contactName;
+    if (contactEmail !== undefined) updateData.contactEmail = contactEmail;
+    if (status !== undefined) updateData.status = status;
+
+    const job = await JobRequest.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    if (!job) {
+      return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+
+    res.json({ success: true, data: job });
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+    next(err);
+  }
+});
+
 // DELETE /api/jobs/:id — delete a job
 // PUBLIC/TRADE ACCESS: Tradespeople / system users can remove entries
 router.delete('/:id', async (req, res, next) => {
